@@ -43,8 +43,52 @@ class Attempt{
   
         // Execute query
         $stmt->execute();
-        
+
         return $stmt; 
         
       }
+
+      // Create Attempt
+    public function create() {
+        // Create query
+        $query = 'INSERT INTO ' . $this->table . 
+            ' SET isSubmitted = :isSubmitted,
+                totalQuestions = :totalQuestions, 
+                totalCorrectAnswer = :totalCorrectAnswer, 
+                startedAt = :startedAt,
+                finishedAt = :finishedAt,
+                userId = :userId';
+
+
+        // Prepare statement
+        $stmt = $this->dbConnection->prepare($query);
+
+        // Clean data
+        $this->isSubmitted = htmlspecialchars(strip_tags($this->isSubmitted));
+        $this->totalQuestions = htmlspecialchars(strip_tags($this->totalQuestions));
+        $this->totalCorrectAnswer = htmlspecialchars(strip_tags($this->totalCorrectAnswer));
+        $this->startedAt = htmlspecialchars(strip_tags($this->startedAt));
+        $this->finishedAt = htmlspecialchars(strip_tags($this->finishedAt));
+        $this->userId = htmlspecialchars(strip_tags($this->userId));
+
+
+
+        // Bind data
+        $stmt->bindParam(':isSubmitted', $this->isSubmitted);
+        $stmt->bindParam(':totalQuestions', $this->totalQuestions);
+        $stmt->bindParam(':totalCorrectAnswer', $this->totalCorrectAnswer);
+        $stmt->bindParam(':startedAt', $this->startedAt);
+        $stmt->bindParam(':finishedAt', $this->finishedAt);
+        $stmt->bindParam(':userId', $this->userId);
+
+
+        // Execute query
+        $stmt->execute();
+        return $stmt;
+     
+  }
+
+
+
+
 }
