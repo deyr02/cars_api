@@ -15,6 +15,7 @@ try{
      // Instantiate blog post object
      $attempt = new Attempt($db);
  
+     //get id from praameter
      $attempt->id = isset($_GET['id']) ? $_GET['id'] : die();
      // Blog post query
      $result = $attempt->read_single();

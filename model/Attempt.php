@@ -23,33 +23,61 @@ class Attempt{
 
       // Get Posts
     public function read() {
-        // Create query
-        $query = 'SELECT * FROM ' . $this->table ;       
-        // Prepare statement
-        $stmt = $this->dbConnection->prepare($query);
-  
-        // Execute query
-        $stmt->execute();
-  
-        return $stmt;
-      }
-
-      public function read_single() {
-        // Create query
-        $query = 'SELECT * FROM ' . $this->table . ' WHERE id = '.$this->id ;      
-
-        // Prepare statement
-        $stmt = $this->dbConnection->prepare($query);
-  
-        // Execute query
-        $stmt->execute();
-
-        return $stmt; 
+        try{
+          // Create query
+          $query = 'SELECT * FROM ' . $this->table ;       
+          // Prepare statement
+          $stmt = $this->dbConnection->prepare($query);
+          // Execute query
+          $stmt->execute();
+          return $stmt;
+        }
+        catch(Exception $e){
+          echo json_encode(array("success" => false, "message" => $e->getMessage()));
+        }
         
       }
 
+      public function readByUser($_userId) { 
+        try{
+          //  query
+          $query = 'SELECT * FROM ' . $this->table . ' WHERE userId = '. $_userId ;      
+          // Prepare statement
+          $stmt = $this->dbConnection->prepare($query);
+          // Execute query
+          $stmt->execute();
+          return $stmt; 
+        }
+        catch(Exception $e){
+          echo json_encode(array("success" => false, "message" => $e->getMessage()));
+        }
+        
+      }
+
+
+      //Read attempt by Id
+      public function read_single() { 
+        try{
+          //  query
+          $query = 'SELECT * FROM ' . $this->table . ' WHERE id = '.$this->id ;      
+          // Prepare statement
+          $stmt = $this->dbConnection->prepare($query);
+          // Execute query
+          $stmt->execute();
+          return $stmt; 
+        }
+        catch(Exception $e){
+          echo json_encode(array("success" => false, "message" => $e->getMessage()));
+        }
+        
+      }
+
+
+
+
       // Create Attempt
     public function create() {
+      try{
         // Create query
         $query = 'INSERT INTO ' . $this->table . 
             ' SET isSubmitted = :isSubmitted,
@@ -58,8 +86,6 @@ class Attempt{
                 startedAt = :startedAt,
                 finishedAt = :finishedAt,
                 userId = :userId';
-
-
         // Prepare statement
         $stmt = $this->dbConnection->prepare($query);
 
@@ -85,7 +111,10 @@ class Attempt{
         // Execute query
         $stmt->execute();
         return $stmt;
-     
+      }
+      catch(Exception $e){
+        echo json_encode(array("success" => false, "message" => $e->getMessage()));
+      }
   }
 
 
