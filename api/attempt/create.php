@@ -11,6 +11,7 @@
   include_once '../../model/AttemptLine.php';
 
 
+  // creates new attempt , add attemtlines  and  returen the lizt of questions .
 
 try{
 
@@ -50,56 +51,27 @@ try{
     //get the random number of array between 0 and length ofr results
     $random_arr = UniqueRandomNumbersWithinRange(0, count($quiz_id_arr)-1, $numberOfQuestion);
     
-    
+    //hold the list of  attempt lines
     $attemptLine_arr = array();
 
+    $quiz_arr = array();
     //For loop to get random questions.
     for($i = 0; $i < count($random_arr); $i++){
-     
+      
+      //get the random quizid,
       $quizid = $quiz_id_arr[$random_arr[$i]];
-       $attemptLine = new AttemptLine($db);
+      //ading attempt lines in attemtline table
+      $attemptLine = new AttemptLine($db);
       $attemptLineResult = $attemptLine->create($attempt_id, $quizid, 0, "");
       array_push ($attemptLine_arr, $attemptLineResult);
+
+      //get the question
+      $question = $quiz->readSingle($quizid);
+      //adding quistion into array
+      array_push($quiz_arr, $question);
     }
+    echo json_encode($quiz_arr);
 
-    echo json_encode($attemptLine_arr);
-
-
-    // if($attempt->create()){
-
-    // }else{
-    //     echo json_encode(
-    //         array('message' => 'Post Not Created')
-    //       );
-    // }
-
-
-
-
-    //  // Blog post query
-    //  $result = $attempt->read_single();
- 
-    //  if($result->rowCount() >=1){
-
-    //     $row = $result->fetch(PDO::FETCH_ASSOC);
-    //     $attempt_item = array(
-    //         'id' => $row['id'],
-    //         'isSubmitted' => $row['isSubmitted'],
-    //         'totalQuestions' => $row['totalQuestions'],
-    //         'totalCorrectAnswer' => $row['totalCorrectAnswer'],
-    //         'startedAt' => $row['startedAt'],
-    //         'finishedAt' => $row['finishedAt'],
-    //         'userId' => $row['userId']
-    //         );
-
-    //     print_r(json_encode($attempt_item));
-
-    //  }
-    //  else{
-    
-    //      http_response_code(404);
-    //      throw new Exception("Not found", 1);
-    //  }
 }
 catch(Exception $e){
     echo json_encode(array("success" => false, "message" => $e->getMessage()));
