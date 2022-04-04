@@ -1,4 +1,6 @@
 <?php
+
+include_once 'Quiz.php';
 class AttemptLine{
    
     //Database 
@@ -63,5 +65,49 @@ class AttemptLine{
      
   }
 
+   //create AttemptLine
+   public function readAllByAttempt($_attemptId) {
+    try{
+          //  query
+          $query = 'SELECT * FROM ' . $this->table . ' WHERE attemptId = '. $_attemptId;      
+
+        // Prepare statement
+        $stmt = $this->dbConnection->prepare($query);
+        // Execute query
+        $result = $stmt->execute();
+        $num = $stmt->rowCount();
+
+        if($num > 0){
+          $attempt_line_arr = array();
+
+          while($row = $stmt->fetch(PDO::FETCH_ASSOC)){
+              extract($row);
+              $quiz = new Quiz($this->dbConnection);
+              $quiz_result = $quiz->readSingle($row['quizId']);
+             
+              $attempt_line_item = array(
+                'attemptId' => $row['attemptId'],
+                'quizid' => $row['quizId'],
+                'isAnswered' => $row['isAnswered'],
+                'userSelection' => $row['userSelection'],
+                'quiz' => $quiz_result
+                ); 
+              array_push($attempt_line_arr, $attempt_line_item);   
+          }
+          return $attempt_line_arr;
+      }
+      else{
+      
+          http_response_code(404);
+          throw new Exception("Not found", 1);
+      }
+      
+        return null;
+    }
+    catch (Excetption $e){
+        echo json_encode(array("success" => false, "message" => $e->getMessage()));
+    }
+ 
+}
 
 }

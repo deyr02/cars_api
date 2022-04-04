@@ -20,7 +20,7 @@
   // Get row count
   $num = $result->rowCount();
 
-  // Check if any posts
+  // Check if any attempts
   if($num > 0) {
     // Post array
     $attempts_arr = array();
