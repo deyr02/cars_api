@@ -36,6 +36,7 @@ try{
     $result = $attempt->create();
     //saving the attempt row id
     $attempt_id =  $db->lastInsertId();
+    $attempt->id = $attempt_id;
 
 
     //creating quiz object
@@ -70,7 +71,17 @@ try{
       //adding quistion into array
       array_push($quiz_arr, $question);
     }
-    echo json_encode($quiz_arr);
+
+    $attempt_item = array(
+      'id' => $attempt->id,
+      'isSubmitted' => $attempt->isSubmitted ,
+      'totalQuestions' => $attempt->totalQuestions,
+      'totalCorrectAnswer' => $attempt->totalCorrectAnswer,
+      'startedAt' => $attempt->startedAt,
+      'finishedAt' => $attempt->finishedAt,
+      'userId' => $attempt->userId
+      );
+    echo json_encode($attempt_item);
 
 }
 catch(Exception $e){

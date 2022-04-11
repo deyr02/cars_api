@@ -119,6 +119,38 @@ class Attempt{
   }
 
 
+  public function update($_id, $_isSubmitted, $_totalCorrectAnswer, $_finishedAt, $_userId){
+    try{
+      // Create query
+      $query = 'UPDATE ' . $this->table . 
+          ' SET isSubmitted = :isSubmitted,
+              totalCorrectAnswer = :totalCorrectAnswer, 
+              finishedAt = :finishedAt,
+              userId = :userId
+              WHERE id = '. $_id;
+
+      // Prepare statement
+      $stmt = $this->dbConnection->prepare($query);
+      // Bind data
+      $stmt->bindParam(':isSubmitted', $_isSubmitted);
+      $stmt->bindParam(':totalCorrectAnswer', $_totalCorrectAnswer);
+      $stmt->bindParam(':finishedAt', $_finishedAt);
+      $stmt->bindParam(':userId', $_userId);
+
+
+      // Execute query
+      $result = $stmt->execute();   
+      if($result){
+        return true;
+      }
+      return false;
+    }
+    catch(Exception $e){
+      echo json_encode(array("success" => false, "message" => $e->getMessage()));
+    }
+}
+
+
 
 
 }

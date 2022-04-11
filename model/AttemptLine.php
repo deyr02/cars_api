@@ -87,7 +87,7 @@ class AttemptLine{
              
               $attempt_line_item = array(
                 'attemptId' => $row['attemptId'],
-                'quizid' => $row['quizId'],
+                'quizId' => $row['quizId'],
                 'isAnswered' => $row['isAnswered'],
                 'userSelection' => $row['userSelection'],
                 'quiz' => $quiz_result
@@ -109,5 +109,52 @@ class AttemptLine{
     }
  
 }
+
+public function update($_attemptId, $_quizId, $_isAnswered, $_userSelection){
+  
+  try{
+    // Create query
+  $query = 'UPDATE ' . $this->table . 
+  ' SET attemptId = :attemptId,
+      quizId = :quizId, 
+      isAnswered = :isAnswered, 
+      userSelection = :userSelection 
+      WHERE attemptId = '. $_attemptId . ' AND quizId = ' . $_quizId ; 
+
+    
+
+  // Prepare statement
+  $stmt = $this->dbConnection->prepare($query);
+
+  // Clean data
+  $this->attemptId = $_attemptId;
+  $this->quizId = $_quizId;
+  $this->isAnswered = $_isAnswered;
+  $this->userSelection = $_userSelection;
+
+  // Bind data
+  $stmt->bindParam(':attemptId', $this->attemptId);
+  $stmt->bindParam(':quizId', $this->quizId);
+  $stmt->bindParam(':isAnswered', $this->isAnswered);
+  $stmt->bindParam(':userSelection', $this->userSelection);
+
+  // Execute query
+  
+
+  $result = $stmt->execute();   
+  if($result){
+    return true;
+  }
+  return false;
+
+ 
+}
+catch (Excetption $e){
+  echo json_encode(array("success" => false, "message" => $e->getMessage()));
+}
+
+
+}
+
 
 }
